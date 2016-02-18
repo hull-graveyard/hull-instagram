@@ -1,0 +1,14 @@
+{
+  "name": "Hull Instagram Ship",
+  "description": "Sends Instagram new pictures to Hull as Events.",
+  "repository": "https://github.com/hull-ships/hull-instagram",
+  "website": "http://www.hull.io",
+  "success_url": "/readme",
+  "env": {
+   "SHIP_TOKEN": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "generator": "secret"
+    }
+  },
+  "scripts": {}
+}

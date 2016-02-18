@@ -1,0 +1,58 @@
+{
+  "name": "hull-instagram",
+  "description": "Store Instagram new picture as Hull Events",
+  "version": "0.0.1",
+  "homepage": "https://github.com/hull-ships/hull-instagram",
+  "license": "MIT",
+  "main": "bin/start",
+  "author": {
+    "name": "Hull",
+    "email": "contact@hull.io",
+    "url": "https://github.com/hull"
+  },
+  "engines": {
+    "node": "5.x",
+    "npm": "2.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/hull-ships/hull-instagram"
+  },
+  "bugs": {
+    "url": "https://github.com/hull-ships/hull-instagram/issues"
+  },
+  "scripts": {
+    "start": "./bin/start"
+  },
+  "keywords": [
+    "hull",
+    "ship",
+    "hull-ship",
+    "webhooks",
+    "integration",
+    "user",
+    "sync",
+    "slack"
+  ],
+  "devDependencies": {
+    "babel-eslint": "^4.1.8",
+    "eslint": "^1.10.3",
+    "eslint-config-airbnb": "^5.0.0",
+    "eslint-plugin-react": "^3.16.1",
+    "rimraf": "^2.5.1"
+  },
+  "dependencies": {
+    "babel-core": "^6.4.5",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-stage-0": "^6.3.13",
+    "babel-register": "^6.4.3",
+    "body-parser": "^1.14.2",
+    "bson-objectid": "^1.1.4",
+    "express": "^4.13.4",
+    "hull": "^0.5.4",
+    "lodash": "^4.2.0",
+    "moment": "^2.11.2",
+    "node-slack": "0.0.7",
+    "object-mapper": "^3.0.0"
+  }
+}

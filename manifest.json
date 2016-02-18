@@ -1,0 +1,26 @@
+{
+  "name": "Instagram",
+  "description": "Store Instagram new picture as Hull Events",
+  "picture": "picture.png",
+  "key": "instagram",
+  "version": "0.0.1",
+  "settings": [],
+  "private_settings": [
+    {
+      "name":"subscription_id",
+      "title": "Webhook subscription id",
+      "type": "string",
+      "default": "",
+      "format" : "hidden"
+    }
+  ],
+  "deployment_settings": [],
+  "resources": [],
+  "readme": "readme.md",
+  "ui": false,
+  "subscriptions": [
+    {
+      "url": "/notify"
+    }
+  ]
+}
