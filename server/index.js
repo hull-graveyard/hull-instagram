@@ -2,21 +2,27 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import path from 'path';
 import { NotifHandler } from 'hull';
+import readmeRedirect from './lib/readme-redirect-middleware';
+import hullDecorator from './lib/hull-decorator';
 import instagram from './instagram';
+import _ from 'lodash';
 
-const handler = NotifHandler({
+const hullHandlers = NotifHandler({
   onSubscribe() {
     console.warn('Hello new subscriber !');
-    console.log(arguments);
   },
   events: {
     'ship:update': instagram.register
   }
 });
 
-const readmeRedirect = function (req, res) {
-  res.redirect(`https://dashboard.hullapp.io/readme?url=https://${req.headers.host}`);
-};
+const instagramHandlers = hullDecorator({
+  onError(err) {
+    console.warn('Boom error', err, err.stack);
+  },
+  handlers: _.pick(instagram, 'notify')
+});
+
 
 module.exports = function (config = {}) {
   const app = express();
@@ -24,16 +30,14 @@ module.exports = function (config = {}) {
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
 
-  app.post('/notify', handler);
-  app.get('/instagram', instagram.callback);
-  app.post('/instagram', instagram.notify);
+  app.get('/instagram/:organization/:id/:secret', instagram.registerCallback);
+  app.post('/instagram/:organization/:id/:secret', instagramHandlers.notify);
+  app.post('/notify', hullHandlers);
 
   app.use(express.static(path.resolve(__dirname, '..', 'dist')));
   app.use(express.static(path.resolve(__dirname, '..', 'assets')));
 
   app.get('/', readmeRedirect);
-
-
   app.get('/readme', readmeRedirect);
 
   app.get('/manifest.json', (req, res) => {
