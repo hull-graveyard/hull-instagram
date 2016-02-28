@@ -50,6 +50,7 @@
     "babel-runtime": "^6.5.0",
     "body-parser": "^1.15.0",
     "bson-objectid": "^1.1.4",
+    "connect": "^3.4.1",
     "express": "^4.13.4",
     "hull": "^0.6.0",
     "lodash": "^4.5.1",
