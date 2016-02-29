@@ -3,6 +3,7 @@ import logError from './lib/log-error';
 import cache from './lib/hull-cache';
 import axios from 'axios';
 import moment from 'moment';
+import URI from 'urijs';
 
 const INSTAGRAM_BASE = 'https://api.instagram.com/v1';
 const INSTAGRAM_SUBSCRIPTION_URL = `${INSTAGRAM_BASE}/subscriptions`;
@@ -103,6 +104,9 @@ export default {
           }
           // UNIX timestamp
           const createdAt = moment(data.created_time, 'X').format();
+          const pictureLink = new URI(data.images.standard_resolution.url).removeSearch(/.*/).toString();
+          const description = data.caption.text;
+
           const context = {
             created_at: createdAt,
             source: 'instagram',
@@ -110,16 +114,39 @@ export default {
             url: null,
             referer: null
           };
-          const payload = {
-            picture: data.images.standard_resolution.url,
+
+          const track = {
+            description,
+            picture: pictureLink,
+            link: data.link,
             filter: data.filter,
             tags: data.tags.join(', '),
             location: data.location,
-            instagram_id: data.id,
-            description: data.caption
+            instagram_id: data.id
           };
+
+          const image = {
+            name: description,
+            tags: data.tags,
+            source_url: pictureLink,
+            description: data.caption.text,
+            created_at: createdAt,
+            extra: {
+              link: data.link
+            }
+          };
+
+          // user.post('/app/activity', {
+          //   verb: 'post',
+          //   title: description,
+          //   content: description,
+          //   picture: pictureLink,
+          //   extra: { tags: data.tags }
+          //   // uid
+          // });
+          user.post('/me/images', image).catch(logError);
           // Do a Hull track as the user.
-          return user.track(`New instagram ${data.type}`, payload, context);
+          return user.track(`New instagram ${data.type}`, track, context);
         }, logError)
 
         .catch(logError);
