@@ -8,7 +8,7 @@ import URI from 'urijs';
 const INSTAGRAM_BASE = 'https://api.instagram.com/v1';
 const INSTAGRAM_SUBSCRIPTION_URL = `${INSTAGRAM_BASE}/subscriptions`;
 const INSTAGRAM_MEDIA_URL = `${INSTAGRAM_BASE}/media`;
-const HOSTNAME = 'https://air.ngrok.io'; // need a way to access the current hostname from callback events.
+const HOSTNAME = 'https://hull-instagram.herokuapp.com'; // need a way to access the current hostname from callback events.
 const SHIP_TOKEN = process.env.SHIP_TOKEN || '398moi2309cmo2983m40';
 const eu = encodeURIComponent;
 
@@ -30,16 +30,15 @@ export default {
         type: 'services/instagram_app'
       }) || {});
       function createSubscription() {
-        return axios.post(INSTAGRAM_SUBSCRIPTION_URL, {
-          data: {
-            object: 'user',
-            aspect: 'media',
-            client_id: key,
-            client_secret: instaSecret,
-            verify_token: SHIP_TOKEN,
-            callback_url: cbu
-          }
-        })
+        const payload = {
+          object: 'user',
+          aspect: 'media',
+          client_id: key,
+          client_secret: instaSecret,
+          verify_token: SHIP_TOKEN,
+          callback_url: cbu
+        };
+        return axios.post(INSTAGRAM_SUBSCRIPTION_URL, payload)
         .then((response) => {
           // If successful, store the subscription id in the ship
           // Ensure we don't trigger a ship update that would triger a re-register
@@ -74,6 +73,7 @@ export default {
 
   notify(req, res, next) {
     const { client } = req.hull;
+
     _.map(req.body, (post = {}) => {
       const { object, object_id: uid, data: { media_id: mid } } = post;
       if (object === 'user') {
@@ -89,6 +89,7 @@ export default {
         , logError)
 
         .then((media = {}) => {
+
           const { status, data: { data } } = media;
 
           // Todo: we could update the user's instagram data from here.
@@ -136,6 +137,7 @@ export default {
             }
           };
 
+        
           // user.post('/app/activity', {
           //   verb: 'post',
           //   title: description,
