@@ -92,6 +92,7 @@ export default {
           // With the instagram token, fetch the newly created media
           restler.get(`${INSTAGRAM_MEDIA_URL}/${mid}?access_token=${token}`)
           .on('success', (media = {}) => {
+            console.log('Received Ping', media);
             const { status, data: { data } } = media;
 
             // Todo: we could update the user's instagram data from here.
@@ -103,7 +104,7 @@ export default {
 
             // Dig into the media to return the right info.
             if (!data || status !== 200) {
-              throw new Error(`No Image found: status:${status} mid:${mid}`);
+              throw new Error(`No Image found: ${media}`);
             }
             // UNIX timestamp
             const createdAt = moment(data.created_time, 'X').format();
