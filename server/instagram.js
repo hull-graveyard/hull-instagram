@@ -91,10 +91,7 @@ export default {
         .then(({ auth: { instagram: { access_token: token } } }) => {
           // With the instagram token, fetch the newly created media
           restler.get(`${INSTAGRAM_MEDIA_URL}/${mid}?access_token=${token}`)
-          .on('success', (media = {}) => {
-            console.log('Received Ping', media);
-            const { status, data: { data } } = media;
-
+          .on('success', ({ data }) => {
             // Todo: we could update the user's instagram data from here.
             // console.log(data.user);
             // { username: 'unity',
@@ -103,8 +100,8 @@ export default {
             // full_name: 'Romain Dardour' }
 
             // Dig into the media to return the right info.
-            if (!data || status !== 200) {
-              throw new Error(`No Image found: ${media}`);
+            if (!data) {
+              throw new Error(`No Image found: ${data}`);
             }
             // UNIX timestamp
             const createdAt = moment(data.created_time, 'X').format();
