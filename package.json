@@ -52,7 +52,7 @@
     "bson-objectid": "^1.1.4",
     "connect": "^3.4.1",
     "express": "^4.13.4",
-    "hull": "^0.6.0",
+    "hull": "^0.6.1",
     "lodash": "^4.5.1",
     "minimist": "^1.2.0",
     "moment": "^2.11.2",

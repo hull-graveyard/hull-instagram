@@ -8,7 +8,6 @@ import URI from 'urijs';
 const INSTAGRAM_BASE = 'https://api.instagram.com/v1';
 const INSTAGRAM_SUBSCRIPTION_URL = `${INSTAGRAM_BASE}/subscriptions`;
 const INSTAGRAM_MEDIA_URL = `${INSTAGRAM_BASE}/media`;
-const HOSTNAME = 'https://hull-instagram.herokuapp.com'; // need a way to access the current hostname from callback events.
 const SHIP_TOKEN = process.env.SHIP_TOKEN || '398moi2309cmo2983m40';
 const eu = encodeURIComponent;
 
@@ -22,9 +21,9 @@ export default {
     }
   },
 
-  register({ subject, message }, { hull, ship }) {
+  register({ subject, message }, { hull, ship, req }) {
     const { organization, id, secret } = hull.configuration();
-    const cbu = `${HOSTNAME}/instagram/${eu(organization)}/${eu(id)}/${eu(secret)}`;
+    const cbu = `${req.hostname}/instagram/${eu(organization)}/${eu(id)}/${eu(secret)}`;
     hull.get('services').then((services) => {
       const { key, secret: instaSecret } = (_.find(services, {
         type: 'services/instagram_app'
@@ -91,9 +90,7 @@ export default {
         .then(({ auth: { instagram: { access_token: token } } }) => {
           // With the instagram token, fetch the newly created media
           restler.get(`${INSTAGRAM_MEDIA_URL}/${mid}?access_token=${token}`)
-          .on('success', (media = {}) => {
-            const { status, data: { data } } = media;
-
+          .on('success', ({ data }) => {
             // Todo: we could update the user's instagram data from here.
             // console.log(data.user);
             // { username: 'unity',
@@ -102,8 +99,8 @@ export default {
             // full_name: 'Romain Dardour' }
 
             // Dig into the media to return the right info.
-            if (!data || status !== 200) {
-              throw new Error(`No Image found: status:${status} mid:${mid}`);
+            if (!data) {
+              throw new Error(`No Image found: ${data}`);
             }
             // UNIX timestamp
             const createdAt = moment(data.created_time, 'X').format();
